@@ -72,7 +72,61 @@ export class GCanvas extends GObject {
     this.size.y = this.srcSize.y * this.zoom
     this.position.x = this.srcPosition.x - this.size.x/2
     this.position.y = this.srcPosition.y - this.size.y/2
-    super.draw(ctx);
+
+    ctx.putImageData(
+      scaleImageData(
+        createAphaBackground(this.srcSize),this.zoom
+      ),
+      this.position.x, 
+      this.position.y)
+    
+  
+    
+    //super.draw(ctx);
   }
   
 } 
+
+
+const createAphaBackground = (fileSize : Vector2D ) : ImageData => {
+  const image = new ImageData(fileSize.x, fileSize.y)
+  let color = 136 
+  for (let y = 0; y < fileSize.y; y++) {
+    for (let x = 0; x < fileSize.x; x++) {
+      const i = (y * fileSize.y + x) * 4;
+      image.data[i + 0] = color;   // R
+      image.data[i + 1] = color;     // G
+      image.data[i + 2] = color;     // B
+      image.data[i + 3] = 255;   // A (opaco)
+
+      color = (color == 136) ? 85 : 136
+    }
+    color = (color == 136) ? 85 : 136
+  }
+  console.log(image)
+
+  return image
+}
+
+const scaleImageData = (src: ImageData, scale : number): ImageData => {
+  const newWidth : number = src.width * scale;
+  const newHeight = src.height * scale;
+  const dst = new ImageData(newWidth, newHeight);
+
+  for (let y = 0; y < newHeight; y++) {
+    for (let x = 0; x < newWidth; x++) {
+      const srcX = Math.floor(x / scale);
+      const srcY = Math.floor(y / scale);
+
+      const srcIndex: number = (srcY * src.width + srcX) * 4;
+      const dstIndex: number = (y * newWidth + x) * 4;
+
+      dst.data[dstIndex + 0] = src.data[srcIndex + 0]!; // R
+      dst.data[dstIndex + 1] = src.data[srcIndex + 1]!; // G
+      dst.data[dstIndex + 2] = src.data[srcIndex + 2]!; // B
+      dst.data[dstIndex + 3] = src.data[srcIndex + 3]!; // A
+    }
+  }
+
+  return dst;
+}
