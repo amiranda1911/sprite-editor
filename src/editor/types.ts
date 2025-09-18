@@ -5,7 +5,7 @@ export interface Vector2D {
 
 
 // Elementos de interface gráfica
-export class gObject {
+export class GObject {
   position : Vector2D
   size : Vector2D
   label: string;
@@ -31,6 +31,8 @@ export class gObject {
     
   }
 
+  scroll = (delta : number) => {}
+
   isInside(cursor: Vector2D): boolean {
     return (
       cursor.x >= this.position.x &&
@@ -41,8 +43,10 @@ export class gObject {
   }
 }
 
-export class GCanvas extends gObject {
-  zoom = 11
+export class GCanvas extends GObject {
+  zoom = 6
+  minZoom = 5
+  maxZoom = 500
   srcSize :Vector2D
   srcPosition : Vector2D
   constructor(
@@ -55,6 +59,12 @@ export class GCanvas extends gObject {
     
     this.srcSize = { ...size }
     this.srcPosition =  { ...positon}
+  }
+
+  scroll = (delta : number) => {
+    this.zoom  = (this.zoom < this.minZoom) && delta < 0 ? this.minZoom : this.zoom += delta
+    this.zoom  = (this.zoom > this.maxZoom ) && delta > 0 ? this.maxZoom : this.zoom += delta
+    
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
