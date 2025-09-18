@@ -49,6 +49,8 @@ export class GCanvas extends GObject {
   maxZoom = 500
   srcSize :Vector2D
   srcPosition : Vector2D
+  srcImage : ImageData
+  scaledImage : ImageData
   constructor(
     positon : Vector2D,
     size: Vector2D,
@@ -59,12 +61,14 @@ export class GCanvas extends GObject {
     
     this.srcSize = { ...size }
     this.srcPosition =  { ...positon}
+    this.srcImage = createAphaBackground(this.srcSize),this.zoom
+    this.scaledImage = scaleImageData(this.srcImage, this.zoom)
   }
 
   scroll = (delta : number) => {
     this.zoom  = (this.zoom < this.minZoom) && delta < 0 ? this.minZoom : this.zoom += delta
     this.zoom  = (this.zoom > this.maxZoom ) && delta > 0 ? this.maxZoom : this.zoom += delta
-    
+    this.scaledImage = scaleImageData(this.srcImage, this.zoom)
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -74,15 +78,9 @@ export class GCanvas extends GObject {
     this.position.y = this.srcPosition.y - this.size.y/2
 
     ctx.putImageData(
-      scaleImageData(
-        createAphaBackground(this.srcSize),this.zoom
-      ),
+      this.scaledImage,
       this.position.x, 
       this.position.y)
-    
-  
-    
-    //super.draw(ctx);
   }
   
 } 
@@ -103,8 +101,6 @@ const createAphaBackground = (fileSize : Vector2D ) : ImageData => {
     }
     color = (color == 136) ? 85 : 136
   }
-  console.log(image)
-
   return image
 }
 
