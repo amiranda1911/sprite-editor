@@ -1,4 +1,4 @@
-import { GCanvas, type gObject, type Vector2D } from "./types"
+import { GCanvas, type GObject, type Vector2D } from "./types"
 
 
 
@@ -9,7 +9,7 @@ export class Editor {
   ctx : CanvasRenderingContext2D
    
   //Elementos do editor
-  gElements : Array<gObject>
+  gElements : Array<GObject>
   
   //Dispositivos de interface humana
   cursor :Vector2D  
@@ -42,7 +42,7 @@ export class Editor {
     this.cursor = {x:0,y:0}
 
     container.addEventListener("mousemove", this.mouseInputHandler)
-
+    container.addEventListener("wheel", this.wheelInputHandler)
     this.update()
   } 
 
@@ -68,10 +68,22 @@ export class Editor {
     requestAnimationFrame(this.update);
   };
 
-
-
   mouseInputHandler = (event : MouseEvent) => {
     this.cursor = getMousePos(this.container, event)
+  }
+  wheelInputHandler = (event: WheelEvent) => {
+    let deltaY = event.deltaY; // valor do scroll vertical
+    
+    // delta com o wheel do mouse gera o valor com +/-100, normalizado para somente 1  
+    deltaY = deltaY > 100 ? 1 : deltaY
+    deltaY = deltaY < -100 ? -1 : deltaY
+
+    this.gElements.forEach(element => {
+      if(element.isInside(this.cursor)) 
+        element.scroll(deltaY)
+    })
+    
+    
   }
 }
 
