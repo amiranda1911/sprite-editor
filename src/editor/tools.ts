@@ -53,7 +53,7 @@ export class Pen extends PTool {
 			this.canvas.srcSize.y
 		))
 
-		const i = (pointer.y * this.canvas.srcSize.y + pointer.x) * 4;
+		const i = (pointer.y * this.canvas.srcSize.x + pointer.x) * 4;
 		
 		this.canvas.srcImage.data[i + 0] = 0;   // R
     this.canvas.srcImage.data[i + 1] = 0;     // G

@@ -92,7 +92,7 @@ const createAphaBackground = (fileSize : Vector2D ) : ImageData => {
   let color = 136 
   for (let y = 0; y < fileSize.y; y++) {
     for (let x = 0; x < fileSize.x; x++) {
-      const i = (y * fileSize.y + x) * 4;
+      const i = (y * fileSize.x + x) * 4;
       image.data[i + 0] = color;   // R
       image.data[i + 1] = color;     // G
       image.data[i + 2] = color;     // B
