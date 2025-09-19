@@ -1,8 +1,9 @@
+import type { PTool } from "./tools";
+
 export interface Vector2D {
     x : number;
     y : number;
 };
-
 
 // Elementos de interface gráfica
 export class GObject {
@@ -63,6 +64,7 @@ export class GCanvas extends GObject {
     this.srcPosition =  { ...positon}
     this.srcImage = createAphaBackground(this.srcSize),this.zoom
     this.scaledImage = scaleImageData(this.srcImage, this.zoom)
+    
   }
 
   scroll = (delta : number) => {
@@ -82,9 +84,8 @@ export class GCanvas extends GObject {
       this.position.x, 
       this.position.y)
   }
-  
-} 
 
+} 
 
 const createAphaBackground = (fileSize : Vector2D ) : ImageData => {
   const image = new ImageData(fileSize.x, fileSize.y)
@@ -125,4 +126,8 @@ const scaleImageData = (src: ImageData, scale : number): ImageData => {
   }
 
   return dst;
+}
+
+export const map = (value: number, inMin: number, inMax: number, outMin: number, outMax: number): number => {
+  return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
 }
